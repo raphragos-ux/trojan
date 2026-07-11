@@ -1,24 +1,27 @@
-# Gumamit ng magaan na base image
+# Gumamit ng Alpine 3.20 bilang base
 FROM alpine:3.20
 
-# Mag-set ng working directory
 WORKDIR /etc/trojan
 
-# I-install ang mga kailangang pakete
+# I-install muna ang mga kailangang tools
 RUN apk update && apk upgrade && \
-    apk add --no-cache nginx trojan bash curl tzdata && \
+    apk add --no-cache nginx bash curl tzdata openssl wget && \
     rm -rf /var/cache/apk/*
 
-# Kopyahin ang mga file papasok sa container
+# 📥 I-download at i-install ang Trojan mula sa official source
+RUN set -e; \
+    wget -O /tmp/trojan.tar.gz https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.gz; \
+    tar -zxf /tmp/trojan.tar.gz -C /usr/local/bin/ trojan; \
+    chmod +x /usr/local/bin/trojan; \
+    rm -f /tmp/trojan.tar.gz
+
+# Kopyahin ang mga config files
 COPY config.json /etc/trojan/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY entrypoint.sh /entrypoint.sh
 
-# Bigyan ng pahintulot na tumakbo ang script
 RUN chmod +x /entrypoint.sh
 
-# Buksan ang mga port na gagamitin
 EXPOSE 80 443
 
-# I-set ang entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
