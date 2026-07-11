@@ -18,7 +18,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_HUB_RAFAELRAGOS }}
-          password: ${{ secrets.DOCKER_HUB_dckr_pat_lIf2CkEf8Ma8NdAAesOHzvGQbFM }}
+          password: ${{ secrets.DOCKER_HUB_RAPHRAGOS }}
 
       - name: Magbuo at Mag-push sa Docker Hub
         uses: docker/build-push-action@v5
