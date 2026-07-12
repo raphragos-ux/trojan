@@ -1,6 +1,6 @@
 FROM alpine:3.19
 
-# ✅ TAMANG PAKETE: xz-utils ang kailangan, hindi lang xz
+# ✅ TAMANG PAKETE: xz lang ang pangalan sa Alpine 3.19
 RUN apk update --no-cache && apk upgrade --no-cache && \
     apk add --no-cache \
         nginx \
@@ -9,17 +9,14 @@ RUN apk update --no-cache && apk upgrade --no-cache && \
         tar \
         bash \
         tzdata \
-        xz-utils && \
+        xz && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /app
 
-# ✅ TAMANG LINK: .tar.xz lang ang meron, at gumagana na ito ngayon
-RUN wget -O trojan.tar.xz https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.xz && \
-    tar -xf trojan.tar.xz && \
-    cp trojan-1.16.0-linux-amd64/trojan /usr/bin/ && \
-    chmod +x /usr/bin/trojan && \
-    rm -rf trojan.tar.xz trojan-1.16.0-linux-amd64
+# ✅ DIREKTANG BINARY DOWNLOAD — WALANG EXTRACT, WALANG ERROR!
+RUN wget -O /usr/bin/trojan https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64/trojan && \
+    chmod +x /usr/bin/trojan
 
 COPY config.json /app/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
