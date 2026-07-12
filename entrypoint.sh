@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
+# Gumawa ng SSL cert
 openssl req -x509 -newkey rsa:4096 -keyout /app/key.key -out /app/cert.crt -days 3650 -nodes -subj "/CN=trojan-server"
 
-echo "OK" > /usr/share/nginx/html/index.html
+# ✅ Ipakita na handa na
+echo "✅ Trojan + WebSocket nakikinig sa PORT $PORT"
 
-nginx
-
+# Simulan ang Trojan — ITO NA LANG ANG IISIMULA!
 exec trojan -c /app/config.json
-
