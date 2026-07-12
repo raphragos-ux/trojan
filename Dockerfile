@@ -1,21 +1,13 @@
 FROM alpine:3.19
 
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache \
-        nginx \
-        openssl \
-        wget \
-        tar \
-        bash \
-        tzdata \
-        xz && \
+    apk add --no-cache nginx openssl wget tar bash tzdata xz && \
     rm -rf /var/cache/apk/*
 
-# ✅ I-set ang PORT na inaasahan ng GCP
 ENV PORT=8080
-
 WORKDIR /app
 
+# ✅ Tamang pagkuha ng Trojan (nakita natin na walang folder)
 RUN wget -O trojan.tar.xz https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.xz && \
     tar -Jxf trojan.tar.xz && \
     mv trojan /usr/bin/ && \
@@ -28,7 +20,7 @@ COPY entrypoint.sh /app/entrypoint.sh
 
 RUN chmod 755 /app/entrypoint.sh && chmod 644 /app/config.json
 
-# ✅ Buksan ang tamang port
-EXPOSE 8080 8443
+EXPOSE 8080
 
 CMD ["/bin/bash", "/app/entrypoint.sh"]
+
