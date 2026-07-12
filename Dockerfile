@@ -19,6 +19,6 @@ COPY entrypoint.sh /app/entrypoint.sh
 
 RUN chmod 755 /app/entrypoint.sh && chmod 644 /app/config.json
 
-EXPOSE 8080
+EXPOSE 8080 8443
 
 CMD ["/bin/bash", "/app/entrypoint.sh"]
