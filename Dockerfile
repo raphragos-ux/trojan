@@ -7,7 +7,6 @@ RUN apk update --no-cache && apk upgrade --no-cache && \
 ENV PORT=8080
 WORKDIR /app
 
-# Tamang pagkuha ng Trojan (walang folder pagka-extract)
 RUN wget -O trojan.tar.xz https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.xz && \
     tar -Jxf trojan.tar.xz && \
     mv trojan /usr/bin/ && \
@@ -23,4 +22,3 @@ RUN chmod 755 /app/entrypoint.sh && chmod 644 /app/config.json
 EXPOSE 8080
 
 CMD ["/bin/bash", "/app/entrypoint.sh"]
-
