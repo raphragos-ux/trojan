@@ -1,21 +1,27 @@
-FROM alpine:3.20
+FROM alpine:3.19
 
-WORKDIR /etc/trojan
-
-RUN apk update && apk upgrade && \
-    apk add --no-cache nginx bash tzdata openssl curl && \
+# I-install ang mga kailangan
+RUN apk update --no-cache && apk upgrade --no-cache && \
+    apk add --no-cache nginx openssl wget tar bash tzdata && \
     rm -rf /var/cache/apk/*
 
-# Download Trojan (gamitin ito kung Trojan; palitan kung VLESS)
-RUN curl -L -o /usr/local/bin/trojan https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64 && \
-    chmod +x /usr/local/bin/trojan
+WORKDIR /app
 
-COPY config.json /etc/trojan/config.json
+# ✅ Siguradong tama ang pag-download at paglalagay ng Trojan
+RUN wget -O trojan.tar.xz https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.xz && \
+    tar -xf trojan.tar.xz && \
+    cp trojan-1.16.0-linux-amd64/trojan /usr/bin/ && \
+    chmod +x /usr/bin/trojan && \
+    rm -rf trojan.tar.xz trojan-1.16.0-linux-amd64
+
+# Kopyahin ang config files
+COPY config.json /app/config.json
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint.sh /app/entrypoint.sh
 
-RUN chmod +x /entrypoint.sh
+# ✅ Siguradong may tamang pahintulot
+RUN chmod 755 /app/entrypoint.sh && chmod 644 /app/config.json
 
-# ✅ BUKAS ANG PORT NA GUSTO NG GCP: 8080
-EXPOSE 8080
-ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 80 443
+
+CMD ["/bin/bash", "/app/entrypoint.sh"]
