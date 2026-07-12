@@ -1,9 +1,11 @@
 #!/bin/bash
 set -e
 
-# ✅ Gumawa ng SSL cert
-openssl req -x509 -newkey rsa:4096 -keyout key.key -out cert.crt -days 3650 -nodes -subj "/CN=trojan-server"
+openssl req -x509 -newkey rsa:4096 -keyout /app/key.key -out /app/cert.crt -days 3650 -nodes -subj "/CN=trojan-server"
 
-# ✅ SIMULAN ANG LAHAT SA ISANG UTOS!
-# Trojan + WebSocket + HTTP Health Check sa port 8080
-exec gost -L "trojan://virgozki123@:$PORT?path=/trojan-ws&cert=/app/cert.crt&key=/app/key.key"
+# ✅ MAGPAPATULOY NG MALIIT NA HTTP SERVER SA PORT 8080 PARA SA HEALTH CHECK
+# Ito ang sasagot sa GCP habang tumatakbo ang Trojan
+(while true; do echo -e "HTTP/1.1 200 OK\n\nOK" | nc -l -p 8080; done) &
+
+# ✅ SIMULAN ANG TROJAN
+exec trojan -c /app/config.json
