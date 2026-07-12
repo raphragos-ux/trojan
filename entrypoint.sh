@@ -1,9 +1,14 @@
 #!/bin/bash
 set -e
 
-openssl req -x509 -newkey rsa:4096 -keyout /app/key.key -out /app/cert.crt -days 3650 -nodes -subj "/C=PH/ST=Visayas/L=Iloilo/O=FreeData/CN=virgozki.com"
+# Gumawa ng SSL cert (walang bansa/lokasyon, simple lang)
+openssl req -x509 -newkey rsa:4096 -keyout /app/key.key -out /app/cert.crt -days 3650 -nodes -subj "/CN=trojan-server"
 
+# Awtomatikong gamitin ang PORT mula sa GCP
+sed -i "s/listen 8080;/listen $PORT;/" /etc/nginx/nginx.conf
+
+# Simulan ang Nginx
 nginx
 
-echo "✅ Nginx sa 8080 | Trojan sa 8443 | PATH: /trojan-ws"
+# Simulan ang Trojan
 exec trojan -c /app/config.json
