@@ -7,10 +7,10 @@ RUN apk update --no-cache && apk upgrade --no-cache && \
 ENV PORT=8080
 WORKDIR /app
 
-# ✅ I-download ang GOST (lahat sa isa: Trojan+WS+HTTP)
-RUN wget -O gost.gz https://github.com/ginuerzh/gost/releases/download/v2.11.5/gost-linux-amd64.gz && \
+# ✅ TAMANG LINK AT PANGALAN NG FILE
+RUN wget -O gost.gz https://github.com/ginuerzh/gost/releases/download/v2.11.2/gost-linux-amd64.gz && \
     gzip -d gost.gz && \
-    mv gost /usr/bin/ && \
+    mv gost-linux-amd64 /usr/bin/gost && \
     chmod +x /usr/bin/gost
 
 COPY entrypoint.sh /app/entrypoint.sh
