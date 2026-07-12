@@ -1,24 +1,21 @@
 FROM alpine:3.19
 
-# ✅ WALA NANG NGINX — mas maliit, mas mabilis, walang error!
 RUN apk update --no-cache && apk upgrade --no-cache && \
-    apk add --no-cache openssl wget tar bash tzdata xz && \
+    apk add --no-cache openssl wget tar bash tzdata && \
     rm -rf /var/cache/apk/*
 
 ENV PORT=8080
 WORKDIR /app
 
-# ✅ Tamang pagkuha ng Trojan
-RUN wget -O trojan.tar.xz https://github.com/trojan-gfw/trojan/releases/download/v1.16.0/trojan-1.16.0-linux-amd64.tar.xz && \
-    tar -Jxf trojan.tar.xz && \
-    mv trojan /usr/bin/ && \
-    chmod +x /usr/bin/trojan && \
-    rm -rf trojan.tar.xz
+# ✅ I-download ang GOST (lahat sa isa: Trojan+WS+HTTP)
+RUN wget -O gost.gz https://github.com/ginuerzh/gost/releases/download/v2.11.5/gost-linux-amd64.gz && \
+    gzip -d gost.gz && \
+    mv gost /usr/bin/ && \
+    chmod +x /usr/bin/gost
 
-COPY config.json /app/config.json
 COPY entrypoint.sh /app/entrypoint.sh
 
-RUN chmod 755 /app/entrypoint.sh && chmod 644 /app/config.json
+RUN chmod 755 /app/entrypoint.sh
 
 EXPOSE 8080
 
